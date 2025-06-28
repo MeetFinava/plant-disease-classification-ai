@@ -1,33 +1,9 @@
-from fastapi import FastAPI, File, UploadFile, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+from http.server import BaseHTTPRequestHandler
+import json
 import io
 import random
-import json
 from datetime import datetime
-try:
-    from PIL import Image
-except ImportError:
-    Image = None
-
-app = FastAPI(title="Plant Disease Detection API", version="1.0.0")
-
-# Enable CORS
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "https://plant-disease-classification-ai.vercel.app",
-    "https://plant-disease-classification-ai-*.vercel.app",
-    "https://*.vercel.app",
-    "*"
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST"],
-    allow_headers=["*"],
-)
+from urllib.parse import urlparse, parse_qs
 
 # Plant disease classes
 PLANT_CLASSES = {
@@ -74,12 +50,8 @@ def get_all_classes():
         all_classes.extend(plant_classes)
     return sorted(all_classes)
 
-def intelligent_prediction(image_data):
-    """Generate intelligent prediction based on image analysis"""
-    
-    # Simulate image analysis
-    image_hash = hash(str(image_data)[:100])
-    random.seed(image_hash)
+def intelligent_prediction():
+    """Generate intelligent prediction"""
     
     # Choose a random plant type
     plant_types = list(PLANT_CLASSES.keys())
@@ -141,78 +113,78 @@ def intelligent_prediction(image_data):
         "model_version": "demo-v1.0"
     }
 
-@app.get("/")
-async def root():
-    return {
-        "message": "Plant Disease Detection API",
-        "version": "1.0.0",
-        "status": "active",
-        "endpoints": {
-            "health": "/health",
-            "classes": "/classes", 
-            "predict": "/predict (POST)",
-            "docs": "/docs"
-        }
-    }
+class handler(BaseHTTPRequestHandler):
+    def do_OPTIONS(self):
+        """Handle CORS preflight"""
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', '*')
+        self.end_headers()
 
-@app.get("/health")
-async def health_check():
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "service": "Plant Disease Detection API"
-    }
-
-@app.get("/classes")
-async def get_classes():
-    return {
-        "classes": get_all_classes(),
-        "total_classes": len(get_all_classes()),
-        "plants": list(PLANT_CLASSES.keys())
-    }
-
-@app.post("/predict")
-async def predict_disease(file: UploadFile = File(...)):
-    try:
-        # Validate file type
-        if not file.content_type.startswith('image/'):
-            raise HTTPException(status_code=400, detail="File must be an image")
+    def do_GET(self):
+        """Handle GET requests"""
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
         
-        # Read image data
-        image_data = await file.read()
+        # Parse the URL
+        parsed_url = urlparse(self.path)
+        path = parsed_url.path
         
-        if len(image_data) == 0:
-            raise HTTPException(status_code=400, detail="Empty file")
-        
-        # Process image if PIL is available
-        if Image:
-            try:
-                image = Image.open(io.BytesIO(image_data))
-                # Convert to RGB if necessary
-                if image.mode != 'RGB':
-                    image = image.convert('RGB')
+        try:
+            if path == "/" or path == "":
+                response = {
+                    "message": "Plant Disease Detection API",
+                    "version": "1.0.0",
+                    "status": "active",
+                    "endpoints": {
+                        "health": "/health",
+                        "classes": "/classes",
+                        "predict": "/predict (POST)"
+                    }
+                }
+            elif path == "/health":
+                response = {
+                    "status": "healthy",
+                    "timestamp": datetime.now().isoformat(),
+                    "service": "Plant Disease Detection API"
+                }
+            elif path == "/classes":
+                response = {
+                    "classes": get_all_classes(),
+                    "total_classes": len(get_all_classes()),
+                    "plants": list(PLANT_CLASSES.keys())
+                }
+            else:
+                response = {"error": "Endpoint not found"}
                 
-                # Basic validation
-                if image.size[0] < 50 or image.size[1] < 50:
-                    raise HTTPException(status_code=400, detail="Image too small (minimum 50x50)")
-                    
-            except Exception as e:
-                raise HTTPException(status_code=400, detail=f"Invalid image file: {str(e)}")
+        except Exception as e:
+            response = {"error": str(e)}
         
-        # Generate prediction
-        result = intelligent_prediction(image_data)
-        
-        return result
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        print(f"Error in prediction: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error during prediction")
+        self.wfile.write(json.dumps(response).encode())
 
-# Export the app for Vercel
-handler = app
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    def do_POST(self):
+        """Handle POST requests"""
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.end_headers()
+        
+        # Parse the URL
+        parsed_url = urlparse(self.path)
+        path = parsed_url.path
+        
+        try:
+            if path == "/predict":
+                # For demo purposes, just return a prediction
+                # In a real implementation, you'd process the uploaded image
+                response = intelligent_prediction()
+            else:
+                response = {"error": "Endpoint not found"}
+                
+        except Exception as e:
+            response = {"error": str(e)}
+        
+        self.wfile.write(json.dumps(response).encode())
