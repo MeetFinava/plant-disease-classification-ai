@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import io
 import os
 import random
-import json
 from datetime import datetime
 try:
     from PIL import Image
@@ -11,6 +10,11 @@ except ImportError:
     Image = None
 
 app = FastAPI(title="Plant Disease Detection API", version="1.0.0")
+
+@app.on_event("startup")
+async def startup_event():
+    print("🌱 Plant Disease Detection API is starting up...")
+    print("✅ API is ready to serve requests!")
 
 # Enable CORS
 origins = [
@@ -216,6 +220,6 @@ handler = app
 
 if __name__ == "__main__":
     import uvicorn
-    import os
     port = int(os.environ.get("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    print(f"Starting server on port {port}")
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
