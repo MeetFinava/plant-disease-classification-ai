@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="tomatoGradient" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" style="stop-color:#ff7675;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e17055;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="stemGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00b894;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00a085;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Tomato body -->
+  <circle cx="100" cy="120" r="65" fill="url(#tomatoGradient)" />
+  
+  <!-- Tomato segments -->
+  <path d="M 100 55 L 100 185" stroke="#d63031" stroke-width="2" opacity="0.3" />
+  <path d="M 65 85 L 135 155" stroke="#d63031" stroke-width="2" opacity="0.3" />
+  <path d="M 135 85 L 65 155" stroke="#d63031" stroke-width="2" opacity="0.3" />
+  
+  <!-- Stem crown -->
+  <g transform="translate(100, 55)">
+    <path d="M -20 0 L -15 -15 L -10 -5 L -5 -20 L 0 -10 L 5 -20 L 10 -5 L 15 -15 L 20 0 Z" fill="url(#stemGradient)" />
+  </g>
+  
+  <!-- Highlight -->
+  <ellipse cx="80" cy="95" rx="18" ry="25" fill="rgba(255,255,255,0.3)" />
+</svg>

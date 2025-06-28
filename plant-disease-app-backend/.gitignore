@@ -1,0 +1,238 @@
+# 🚫 Plant Disease Detection Backend - .gitignore
+
+# ===== PYTHON =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ===== VIRTUAL ENVIRONMENTS =====
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.env
+.venv
+.ENV
+.env.local
+.env.development
+.env.production
+.env.test
+
+# ===== JUPYTER NOTEBOOK =====
+.ipynb_checkpoints
+*.ipynb
+
+# ===== PYENV =====
+.python-version
+
+# ===== PIPENV =====
+Pipfile.lock
+
+# ===== POETRY =====
+poetry.lock
+
+# ===== CELERY =====
+celerybeat-schedule
+celerybeat.pid
+
+# ===== SPYDER =====
+.spyderproject
+.spyproject
+
+# ===== ROPE =====
+.ropeproject
+
+# ===== MKDOCS =====
+/site
+
+# ===== MYPY =====
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ===== PYRE =====
+.pyre/
+
+# ===== PYTYPE =====
+.pytype/
+
+# ===== CYTHON =====
+cython_debug/
+
+# ===== MACHINE LEARNING MODELS =====
+# Large model files (uncomment if you have large models)
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.model
+*.weights
+*.ckpt
+*.pb
+*.pth
+*.pt
+models/*.h5
+models/*.pkl
+models/*.joblib
+checkpoints/
+saved_models/
+weights/
+
+# ===== DATASETS =====
+# Large dataset files (uncomment if needed)
+# *.csv
+# *.json
+# *.parquet
+# data/
+# datasets/
+# raw_data/
+
+# ===== TENSORFLOW =====
+.tensorboard/
+logs/
+tf_logs/
+tensorboard_logs/
+
+# ===== PYTORCH =====
+lightning_logs/
+
+# ===== WANDB =====
+wandb/
+
+# ===== MLflow =====
+mlruns/
+mlflow.db
+
+# ===== LOGS =====
+*.log
+logs/
+log/
+*.out
+
+# ===== TESTING =====
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# ===== IDE & EDITORS =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ===== OS GENERATED FILES =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ===== TEMPORARY FILES =====
+*.tmp
+*.temp
+.cache/
+tmp/
+temp/
+
+# ===== FASTAPI SPECIFIC =====
+.pytest_cache/
+instance/
+.webassets-cache
+
+# ===== UVICORN =====
+uvicorn.log
+
+# ===== GUNICORN =====
+gunicorn.log
+
+# ===== DATABASE =====
+*.db
+*.sqlite
+*.sqlite3
+database.db
+app.db
+
+# ===== REDIS =====
+dump.rdb
+
+# ===== DOCKER =====
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+
+# ===== KUBERNETES =====
+*.yaml.bak
+*.yml.bak
+
+# ===== SECRETS & KEYS =====
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+.secrets/
+credentials.json
+service-account.json
+
+# ===== BACKUP FILES =====
+*.bak
+*.backup
+*.old
+*.orig
+
+# ===== COMPRESSED FILES =====
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ===== UPLOADS =====
+uploads/
+uploaded_images/
+temp_uploads/
+
+# ===== CUSTOM EXCLUSIONS =====
+# Add any project-specific files to ignore
+debug/
+scratch/
+notes.txt
+todo.md
+.notes/
+experiments/
+research/

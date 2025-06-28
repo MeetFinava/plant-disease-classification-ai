@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <radialGradient id="grapeGradient" cx="0.3" cy="0.3" r="0.7">
+      <stop offset="0%" style="stop-color:#a29bfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6c5ce7;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="leafGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00b894;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00a085;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Grape cluster -->
+  <g fill="url(#grapeGradient)">
+    <!-- Top row -->
+    <circle cx="100" cy="70" r="8" />
+    <!-- Second row -->
+    <circle cx="90" cy="85" r="8" />
+    <circle cx="110" cy="85" r="8" />
+    <!-- Third row -->
+    <circle cx="85" cy="100" r="8" />
+    <circle cx="100" cy="100" r="8" />
+    <circle cx="115" cy="100" r="8" />
+    <!-- Fourth row -->
+    <circle cx="80" cy="115" r="8" />
+    <circle cx="95" cy="115" r="8" />
+    <circle cx="105" cy="115" r="8" />
+    <circle cx="120" cy="115" r="8" />
+    <!-- Fifth row -->
+    <circle cx="85" cy="130" r="8" />
+    <circle cx="100" cy="130" r="8" />
+    <circle cx="115" cy="130" r="8" />
+    <!-- Sixth row -->
+    <circle cx="90" cy="145" r="8" />
+    <circle cx="110" cy="145" r="8" />
+    <!-- Bottom row -->
+    <circle cx="100" cy="160" r="8" />
+  </g>
+  
+  <!-- Stem -->
+  <rect x="98" y="45" width="4" height="25" fill="#8b4513" rx="2" />
+  
+  <!-- Leaf -->
+  <path d="M 70 50 Q 60 40 50 50 Q 55 60 65 65 Q 75 60 70 50" fill="url(#leafGradient)" />
+  
+  <!-- Leaf veins -->
+  <path d="M 60 50 L 65 55" stroke="#00a085" stroke-width="1" />
+  <path d="M 60 50 L 55 55" stroke="#00a085" stroke-width="1" />
+  
+  <!-- Highlights on grapes -->
+  <g fill="rgba(255,255,255,0.4)">
+    <ellipse cx="95" cy="67" rx="3" ry="4" />
+    <ellipse cx="105" cy="82" rx="3" ry="4" />
+    <ellipse cx="95" cy="97" rx="3" ry="4" />
+    <ellipse cx="110" cy="112" rx="3" ry="4" />
+  </g>
+</svg>

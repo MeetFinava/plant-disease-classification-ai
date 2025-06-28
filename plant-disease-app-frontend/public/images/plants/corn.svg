@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="cornGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fdcb6e;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f39c12;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="huskGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00b894;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00a085;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Corn cob -->
+  <ellipse cx="100" cy="120" rx="25" ry="75" fill="url(#cornGradient)" />
+  
+  <!-- Corn kernels -->
+  <g opacity="0.6">
+    <circle cx="90" cy="80" r="3" fill="#e67e22" />
+    <circle cx="100" cy="80" r="3" fill="#e67e22" />
+    <circle cx="110" cy="80" r="3" fill="#e67e22" />
+    <circle cx="85" cy="95" r="3" fill="#e67e22" />
+    <circle cx="95" cy="95" r="3" fill="#e67e22" />
+    <circle cx="105" cy="95" r="3" fill="#e67e22" />
+    <circle cx="115" cy="95" r="3" fill="#e67e22" />
+    <circle cx="90" cy="110" r="3" fill="#e67e22" />
+    <circle cx="100" cy="110" r="3" fill="#e67e22" />
+    <circle cx="110" cy="110" r="3" fill="#e67e22" />
+    <circle cx="85" cy="125" r="3" fill="#e67e22" />
+    <circle cx="95" cy="125" r="3" fill="#e67e22" />
+    <circle cx="105" cy="125" r="3" fill="#e67e22" />
+    <circle cx="115" cy="125" r="3" fill="#e67e22" />
+    <circle cx="90" cy="140" r="3" fill="#e67e22" />
+    <circle cx="100" cy="140" r="3" fill="#e67e22" />
+    <circle cx="110" cy="140" r="3" fill="#e67e22" />
+    <circle cx="85" cy="155" r="3" fill="#e67e22" />
+    <circle cx="95" cy="155" r="3" fill="#e67e22" />
+    <circle cx="105" cy="155" r="3" fill="#e67e22" />
+    <circle cx="115" cy="155" r="3" fill="#e67e22" />
+  </g>
+  
+  <!-- Corn husk -->
+  <path d="M 75 60 Q 70 80 75 120 Q 80 140 85 160 Q 90 180 100 190" stroke="url(#huskGradient)" stroke-width="8" fill="none" />
+  <path d="M 125 60 Q 130 80 125 120 Q 120 140 115 160 Q 110 180 100 190" stroke="url(#huskGradient)" stroke-width="8" fill="none" />
+  
+  <!-- Corn silk -->
+  <g stroke="#8b4513" stroke-width="1" fill="none" opacity="0.7">
+    <path d="M 100 45 Q 95 50 90 55" />
+    <path d="M 100 45 Q 105 50 110 55" />
+    <path d="M 100 45 Q 100 50 95 60" />
+    <path d="M 100 45 Q 100 50 105 60" />
+  </g>
+</svg>

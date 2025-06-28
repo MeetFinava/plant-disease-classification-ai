@@ -1,0 +1,249 @@
+# 🚫 Plant Disease Classification AI - Root .gitignore
+
+# ===== FRONTEND (React/Node.js) =====
+# Dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Production builds
+build/
+dist/
+out/
+*/build/
+*/dist/
+*/out/
+
+# Environment variables
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env*.local
+*/.env
+*/.env.local
+
+# Logs
+*.log
+logs/
+*/logs/
+
+# Cache
+.cache/
+.parcel-cache/
+*/.cache/
+
+# Testing
+coverage/
+.nyc_output/
+*/coverage/
+
+# ESLint
+.eslintcache
+*/.eslintcache
+
+# ===== BACKEND (Python/FastAPI) =====
+# Python
+__pycache__/
+*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+env/
+venv/
+.env
+.venv
+*/env/
+*/venv/
+*/.env
+*/.venv
+
+# Python packages
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ===== MACHINE LEARNING =====
+# Model files (large files)
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.joblib
+*.model
+*.weights
+*.ckpt
+*.pb
+*.pth
+*.pt
+models/*.h5
+models/*.pkl
+models/*.joblib
+*/models/*.h5
+*/models/*.pkl
+*/models/*.joblib
+
+# ML experiment tracking
+wandb/
+mlruns/
+tensorboard_logs/
+*/wandb/
+*/mlruns/
+*/tensorboard_logs/
+
+# Datasets (uncomment if you have large datasets)
+# *.csv
+# *.json
+# data/
+# datasets/
+# raw_data/
+
+# ===== IDE & EDITORS =====
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ===== OS GENERATED FILES =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ===== DEPLOYMENT =====
+.vercel
+.netlify/
+.firebase/
+.railway/
+
+# ===== DOCKER =====
+.dockerignore
+docker-compose.override.yml
+
+# ===== DATABASE =====
+*.db
+*.sqlite
+*.sqlite3
+database.db
+app.db
+
+# ===== SECRETS & KEYS =====
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+.secrets/
+credentials.json
+service-account.json
+config.json
+
+# ===== TEMPORARY FILES =====
+*.tmp
+*.temp
+tmp/
+temp/
+.cache/
+
+# ===== BACKUP FILES =====
+*.bak
+*.backup
+*.old
+*.orig
+
+# ===== COMPRESSED FILES =====
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# ===== PACKAGE MANAGERS =====
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Pipfile.lock
+poetry.lock
+
+# ===== TESTING =====
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# ===== JUPYTER NOTEBOOKS =====
+.ipynb_checkpoints
+*.ipynb
+
+# ===== UPLOADS & USER CONTENT =====
+uploads/
+uploaded_images/
+temp_uploads/
+user_uploads/
+
+# ===== CUSTOM PROJECT FILES =====
+# Development notes
+notes.txt
+todo.md
+.notes/
+scratch/
+debug/
+experiments/
+research/
+
+# Large media files (uncomment if needed)
+# *.mp4
+# *.mov
+# *.avi
+# *.mkv
+# *.pdf
+# *.psd
+# *.ai
+
+# ===== SPECIFIC TO THIS PROJECT =====
+# Ignore any local configuration
+local_config.py
+local_settings.py
+development.py
+
+# Ignore any test images or datasets
+test_images/
+sample_data/
+demo_images/
+
+# Ignore any documentation builds
+docs/_build/
+docs/build/
+
+# ===== GITHUB SPECIFIC =====
+# GitHub Codespaces
+.devcontainer/
+
+# ===== SECURITY =====
+# Never commit these
+*.env
+.env.*
+secrets.*
+private_key.*
+api_keys.*
+credentials.*
