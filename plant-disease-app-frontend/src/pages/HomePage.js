@@ -121,10 +121,12 @@ function HomePage() {
     setError('');
 
     try {
+      // Try to connect to backend API
+      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
       const formData = new FormData();
       formData.append('file', uploadedImage);
 
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/predict`, {
+      const response = await fetch(`${API_URL}/predict`, {
         method: 'POST',
         body: formData,
       });
@@ -136,11 +138,69 @@ function HomePage() {
       const data = await response.json();
       setResults(data);
     } catch (error) {
-      console.error('Error analyzing image:', error);
-      setError('Failed to analyze image. Please try again.');
+      console.error('Backend API not available, using demo mode:', error);
+
+      // Demo mode - simulate AI prediction
+      const demoResults = generateDemoResults();
+      setResults(demoResults);
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateDemoResults = () => {
+    // Simulate intelligent AI prediction based on selected plant
+    const selectedPlantData = plants.find(p => p.id === selectedPlant);
+    const plantName = selectedPlantData ? selectedPlantData.name : 'Unknown Plant';
+
+    // Generate realistic demo results
+    const diseases = [
+      { name: 'Healthy', isHealthy: true },
+      { name: 'Early Blight', isHealthy: false },
+      { name: 'Late Blight', isHealthy: false },
+      { name: 'Bacterial Spot', isHealthy: false },
+      { name: 'Leaf Mold', isHealthy: false },
+      { name: 'Powdery Mildew', isHealthy: false }
+    ];
+
+    // Randomly select a disease (70% chance healthy for demo)
+    const isHealthy = Math.random() > 0.3;
+    const selectedDisease = isHealthy
+      ? diseases[0]
+      : diseases[Math.floor(Math.random() * (diseases.length - 1)) + 1];
+
+    const confidence = isHealthy
+      ? 0.85 + Math.random() * 0.1
+      : 0.75 + Math.random() * 0.15;
+
+    // Generate top 3 predictions
+    const topPredictions = [
+      {
+        plant: plantName,
+        disease: selectedDisease.name,
+        confidence: confidence,
+        class_name: `${plantName.toLowerCase()}___${selectedDisease.name.toLowerCase().replace(' ', '_')}`
+      }
+    ];
+
+    // Add 2 more predictions with lower confidence
+    const otherDiseases = diseases.filter(d => d.name !== selectedDisease.name);
+    for (let i = 0; i < 2 && i < otherDiseases.length; i++) {
+      const disease = otherDiseases[i];
+      topPredictions.push({
+        plant: plantName,
+        disease: disease.name,
+        confidence: confidence - (0.1 + Math.random() * 0.2),
+        class_name: `${plantName.toLowerCase()}___${disease.name.toLowerCase().replace(' ', '_')}`
+      });
+    }
+
+    return {
+      prediction: topPredictions[0],
+      top_predictions: topPredictions,
+      demo_mode: true,
+      message: "Demo mode - Connect backend API for real AI predictions"
+    };
   };
 
   const getHealthIcon = (disease) => {
@@ -346,6 +406,20 @@ function HomePage() {
               <Typography variant="h4" gutterBottom textAlign="center" color="primary">
                 🔬 Analysis Results
               </Typography>
+
+              {/* Demo Mode Indicator */}
+              {results.demo_mode && (
+                <Alert
+                  severity="info"
+                  sx={{
+                    mb: 3,
+                    borderRadius: 3,
+                    background: 'linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(100, 181, 246, 0.1))'
+                  }}
+                >
+                  <strong>🎭 Demo Mode:</strong> This is a simulated prediction. Connect a backend API for real AI analysis.
+                </Alert>
+              )}
 
               {/* Main Result */}
               <Box className="result-main">

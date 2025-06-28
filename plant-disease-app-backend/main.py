@@ -15,8 +15,10 @@ app = FastAPI(title="Plant Disease Detection API", version="1.0.0")
 origins = [
     "http://localhost:3000",  # React development server
     "http://127.0.0.1:3000",
-    "https://your-frontend-domain.vercel.app",  # Replace with your Vercel domain
-    # Add more allowed origins as needed
+    "https://plant-disease-classification-ai.vercel.app",  # Your frontend domain
+    "https://plant-disease-classification-ai-*.vercel.app",  # Vercel preview deployments
+    "https://*.vercel.app",  # All Vercel domains
+    "*"  # Allow all origins for demo (remove in production)
 ]
 
 app.add_middleware(
@@ -310,6 +312,9 @@ async def predict_disease(file: UploadFile = File(...)):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+
+# Vercel handler
+handler = app
 
 if __name__ == "__main__":
     import uvicorn
