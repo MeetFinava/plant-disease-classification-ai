@@ -20,8 +20,10 @@ import {
   CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/LanguageContext';
 
 function ContactPage() {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -153,10 +155,10 @@ function ContactPage() {
               fontWeight: 700,
             }}
           >
-            📞 Contact Us
+            📞 {t('contactUs')}
           </Typography>
           <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
-            Have questions about plant diseases or need technical support? We're here to help!
+            {t('getInTouch')}
           </Typography>
         </Box>
       </motion.div>

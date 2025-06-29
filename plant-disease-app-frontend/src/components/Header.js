@@ -13,48 +13,26 @@ import {
   useMediaQuery
 } from '@mui/material';
 import {
-  Language as LanguageIcon,
   Menu as MenuIcon,
   Home as HomeIcon,
   Info as InfoIcon,
   ContactMail as ContactIcon
 } from '@mui/icons-material';
-import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSelector from './LanguageSelector';
 
 function Header() {
-  const { t, i18n } = useTranslation();
+  const { t } = useLanguage();
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
-  const [languageAnchor, setLanguageAnchor] = useState(null);
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null);
 
-  const languages = [
-    { code: 'en', name: 'English', flag: '🇺🇸' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'hi', name: 'हिंदी', flag: '🇮🇳' }
-  ];
-
   const navigationItems = [
-    { path: '/', label: t('nav.home') || 'Home', icon: <HomeIcon /> },
-    { path: '/plant-info', label: t('nav.plantInfo') || 'Plant Info', icon: <InfoIcon /> },
-    { path: '/contact', label: t('nav.contact') || 'Contact', icon: <ContactIcon /> }
+    { path: '/', label: t('home'), icon: <HomeIcon /> },
+    { path: '/plant-info', label: t('plantInfo'), icon: <InfoIcon /> },
+    { path: '/contact', label: t('contact'), icon: <ContactIcon /> }
   ];
-
-  const handleLanguageClick = (event) => {
-    setLanguageAnchor(event.currentTarget);
-  };
-
-  const handleLanguageClose = () => {
-    setLanguageAnchor(null);
-  };
-
-  const handleLanguageChange = (languageCode) => {
-    i18n.changeLanguage(languageCode);
-    handleLanguageClose();
-  };
 
   const handleMobileMenuClick = (event) => {
     setMobileMenuAnchor(event.currentTarget);
@@ -149,20 +127,7 @@ function Header() {
 
         {/* Language Selector & Mobile Menu */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <IconButton
-            onClick={handleLanguageClick}
-            sx={{
-              color: 'primary.main',
-              backgroundColor: 'rgba(76, 175, 80, 0.1)',
-              '&:hover': {
-                backgroundColor: 'rgba(76, 175, 80, 0.2)',
-                transform: 'scale(1.1)',
-              },
-              transition: 'all 0.3s ease',
-            }}
-          >
-            <LanguageIcon />
-          </IconButton>
+          <LanguageSelector variant={isMobile ? "chip" : "button"} />
 
           {isMobile && (
             <IconButton
@@ -182,41 +147,7 @@ function Header() {
           )}
         </Box>
 
-        {/* Language Menu */}
-        <Menu
-          anchorEl={languageAnchor}
-          open={Boolean(languageAnchor)}
-          onClose={handleLanguageClose}
-          PaperProps={{
-            sx: {
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: 2,
-              border: '1px solid rgba(76, 175, 80, 0.2)',
-              mt: 1,
-            },
-          }}
-        >
-          {languages.map((lang) => (
-            <MenuItem
-              key={lang.code}
-              onClick={() => handleLanguageChange(lang.code)}
-              selected={i18n.language === lang.code}
-              sx={{
-                gap: 1,
-                '&.Mui-selected': {
-                  backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                },
-                '&:hover': {
-                  backgroundColor: 'rgba(76, 175, 80, 0.05)',
-                },
-              }}
-            >
-              <span>{lang.flag}</span>
-              {lang.name}
-            </MenuItem>
-          ))}
-        </Menu>
+
 
         {/* Mobile Navigation Menu */}
         <Menu

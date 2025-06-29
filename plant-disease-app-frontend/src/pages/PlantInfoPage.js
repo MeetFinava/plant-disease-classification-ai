@@ -23,6 +23,7 @@ import {
   Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const plantsData = [
   {
@@ -104,10 +105,128 @@ const plantsData = [
         severity: 'Very High'
       }
     ]
+  },
+  {
+    id: 'corn',
+    name: 'Corn (Maize)',
+    image: '/images/plants/corn.svg',
+    description: 'Corn is a major cereal grain and one of the most important food crops globally, susceptible to various leaf diseases.',
+    diseases: [
+      {
+        name: 'Cercospora Leaf Spot',
+        symptoms: 'Small, rectangular gray spots with dark borders on leaves.',
+        prevention: 'Crop rotation, resistant varieties, proper field sanitation.',
+        cure: 'Apply fungicides, remove crop residue after harvest.',
+        severity: 'Medium'
+      },
+      {
+        name: 'Common Rust',
+        symptoms: 'Small, oval, reddish-brown pustules on both leaf surfaces.',
+        prevention: 'Plant resistant hybrids, proper spacing for air circulation.',
+        cure: 'Apply fungicides if severe, remove infected leaves.',
+        severity: 'Medium'
+      },
+      {
+        name: 'Northern Leaf Blight',
+        symptoms: 'Large, elliptical gray-green lesions on leaves.',
+        prevention: 'Use resistant varieties, crop rotation, bury crop residue.',
+        cure: 'Apply fungicides preventively, remove infected plant debris.',
+        severity: 'High'
+      }
+    ]
+  },
+  {
+    id: 'grape',
+    name: 'Grape',
+    image: '/images/plants/grape.svg',
+    description: 'Grapes are cultivated worldwide for fresh consumption and wine production, facing various fungal diseases.',
+    diseases: [
+      {
+        name: 'Black Rot',
+        symptoms: 'Circular brown spots on leaves, mummified berries.',
+        prevention: 'Prune for air circulation, remove mummified fruit, clean cultivation.',
+        cure: 'Apply fungicides during growing season, remove infected plant parts.',
+        severity: 'High'
+      },
+      {
+        name: 'Esca (Black Measles)',
+        symptoms: 'Tiger stripe pattern on leaves, berry spotting, wood decay.',
+        prevention: 'Proper pruning techniques, wound protection, avoid stress.',
+        cure: 'Remove infected wood, apply protective fungicides to wounds.',
+        severity: 'Very High'
+      },
+      {
+        name: 'Leaf Blight',
+        symptoms: 'Brown spots on leaves, premature defoliation.',
+        prevention: 'Good air circulation, avoid overhead watering, sanitation.',
+        cure: 'Apply fungicides, remove fallen leaves, improve ventilation.',
+        severity: 'Medium'
+      }
+    ]
+  },
+  {
+    id: 'pepper',
+    name: 'Bell Pepper',
+    image: '/images/plants/pepper.svg',
+    description: 'Bell peppers are sweet peppers rich in vitamins, commonly affected by bacterial diseases.',
+    diseases: [
+      {
+        name: 'Bacterial Spot',
+        symptoms: 'Small, dark spots on leaves and fruit with yellow halos.',
+        prevention: 'Use certified seeds, avoid overhead irrigation, crop rotation.',
+        cure: 'Apply copper-based bactericides, remove infected plants.',
+        severity: 'High'
+      }
+    ]
+  },
+  {
+    id: 'strawberry',
+    name: 'Strawberry',
+    image: '/images/plants/strawberry.svg',
+    description: 'Strawberries are popular berry fruits rich in vitamin C, susceptible to various leaf diseases.',
+    diseases: [
+      {
+        name: 'Leaf Scorch',
+        symptoms: 'Purple to brown spots on leaves, leaf browning and death.',
+        prevention: 'Plant resistant varieties, ensure good drainage, avoid overhead watering.',
+        cure: 'Remove infected leaves, apply fungicides, improve air circulation.',
+        severity: 'Medium'
+      },
+      {
+        name: 'Leaf Spot',
+        symptoms: 'Small, circular spots with white centers and purple borders.',
+        prevention: 'Avoid overhead watering, proper plant spacing, remove debris.',
+        cure: 'Apply fungicides, remove infected foliage, improve ventilation.',
+        severity: 'Medium'
+      }
+    ]
+  },
+  {
+    id: 'cherry',
+    name: 'Cherry',
+    image: '/images/plants/cherry.svg',
+    description: 'Cherries are stone fruits known for their sweet taste, facing various fungal diseases.',
+    diseases: [
+      {
+        name: 'Powdery Mildew',
+        symptoms: 'White, powdery coating on leaves and shoots.',
+        prevention: 'Plant in sunny locations, ensure air circulation, avoid overhead watering.',
+        cure: 'Apply sulfur-based fungicides, prune infected shoots.',
+        severity: 'Medium'
+      },
+      {
+        name: 'Leaf Spot',
+        symptoms: 'Small, round spots on leaves with yellow halos.',
+        prevention: 'Avoid overhead watering, rake fallen leaves, proper spacing.',
+        cure: 'Apply copper fungicides, improve air circulation.',
+        severity: 'Medium'
+      }
+    ]
   }
 ];
 
 function PlantInfoPage() {
+  const { t } = useLanguage();
   const [selectedPlant, setSelectedPlant] = useState(0);
   const [selectedTab, setSelectedTab] = useState(0);
 
@@ -148,10 +267,10 @@ function PlantInfoPage() {
               fontWeight: 700,
             }}
           >
-            🌿 Plant Information
+            🌿 {t('plantInformation')}
           </Typography>
           <Typography variant="h6" color="text.secondary">
-            Learn about common plant diseases and their management
+            {t('description')}
           </Typography>
         </Box>
       </motion.div>

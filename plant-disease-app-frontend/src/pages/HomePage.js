@@ -8,7 +8,13 @@ import {
   Button,
   Chip,
   Alert,
-  Collapse
+  Collapse,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  CardContent
 } from '@mui/material';
 import {
   CloudUpload as CloudUploadIcon,
@@ -17,9 +23,11 @@ import {
   ExpandMore as ExpandMoreIcon,
   ExpandLess as ExpandLessIcon,
   CheckCircle as CheckCircleIcon,
-  Warning as WarningIcon
+  Warning as WarningIcon,
+  Close as CloseIcon
 } from '@mui/icons-material';
 import { useDropzone } from 'react-dropzone';
+import { useLanguage } from '../contexts/LanguageContext';
 
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -83,6 +91,7 @@ const plants = [
 ];
 
 function HomePage() {
+  const { t } = useLanguage();
   const [selectedPlant, setSelectedPlant] = useState('');
   const [uploadedImage, setUploadedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -90,10 +99,18 @@ function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showDebug, setShowDebug] = useState(false);
+  const [showPlantSelectionDialog, setShowPlantSelectionDialog] = useState(false);
 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
     if (file) {
+      if (!selectedPlant) {
+        // Show plant selection dialog if no plant is selected
+        setUploadedImage(file);
+        setImagePreview(URL.createObjectURL(file));
+        setShowPlantSelectionDialog(true);
+        return;
+      }
       setUploadedImage(file);
       setImagePreview(URL.createObjectURL(file));
       setResults(null);
@@ -214,6 +231,15 @@ function HomePage() {
     return Math.round(confidence * 100);
   };
 
+  const getAccuracyLabel = (confidence) => {
+    if (confidence >= 0.90) return "Very High Confidence";
+    if (confidence >= 0.80) return "High Confidence";
+    if (confidence >= 0.70) return "Good Confidence";
+    if (confidence >= 0.60) return "Moderate Confidence";
+    if (confidence >= 0.50) return "Low Confidence";
+    return "Very Low Confidence";
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Hero Section */}
@@ -236,14 +262,14 @@ function HomePage() {
               mb: 2,
             }}
           >
-            🌱 Plant Disease Detection
+            🌱 {t('title')}
           </Typography>
           <Typography
             variant="h5"
             color="text.secondary"
             sx={{ fontWeight: 400, maxWidth: 600, mx: 'auto' }}
           >
-            AI-powered plant health analysis for better crop management
+            {t('subtitle')}
           </Typography>
         </Box>
       </motion.div>
@@ -256,7 +282,7 @@ function HomePage() {
       >
         <Box className="glass-card" sx={{ p: 4, mb: 4 }}>
           <Typography variant="h4" gutterBottom textAlign="center" color="primary">
-            Select Your Plant
+            {t('selectPlant')}
           </Typography>
           
           <Grid container spacing={3} justifyContent="center">
@@ -321,17 +347,17 @@ function HomePage() {
               <input {...getInputProps()} />
               <CloudUploadIcon sx={{ fontSize: 60, color: 'primary.main', mb: 2 }} />
               <Typography variant="h6" gutterBottom>
-                {isDragActive ? 'Drop the image here' : 'Drag & drop an image here'}
+                {isDragActive ? t('dragDropActive') : t('dragDropText')}
               </Typography>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                or click to select (JPG, PNG, GIF - max 10MB)
+                {t('supportedFormats')}
               </Typography>
               <Button
                 variant="outlined"
                 startIcon={<PhotoCameraIcon />}
                 size="large"
               >
-                Choose File
+                {t('uploadButton')}
               </Button>
             </Box>
           ) : (
@@ -352,7 +378,7 @@ function HomePage() {
                   }}
                   startIcon={<PhotoCameraIcon />}
                 >
-                  Change Image
+                  {t('uploadButton')}
                 </Button>
                 <Button
                   variant="contained"
@@ -371,7 +397,7 @@ function HomePage() {
                   {loading ? (
                     <Box className="loading-spinner" sx={{ width: 24, height: 24 }} />
                   ) : (
-                    '🎯 Predict Disease'
+                    `🎯 ${t('analyzeImage')}`
                   )}
                 </Button>
               </Box>
@@ -404,7 +430,7 @@ function HomePage() {
           >
             <Box className="result-container">
               <Typography variant="h4" gutterBottom textAlign="center" color="primary">
-                🔬 Analysis Results
+                🔬 {t('analysisResults')}
               </Typography>
 
               {/* Demo Mode Indicator */}
@@ -417,7 +443,7 @@ function HomePage() {
                     background: 'linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(100, 181, 246, 0.1))'
                   }}
                 >
-                  <strong>🎭 Demo Mode:</strong> This is a simulated prediction. Connect a backend API for real AI analysis.
+                  <strong>🎭 {t('demoMode')}:</strong> {t('demoModeDescription')}
                 </Alert>
               )}
 
@@ -431,12 +457,12 @@ function HomePage() {
                 </Box>
 
                 <Typography variant="h6" sx={{ mb: 2, opacity: 0.9 }}>
-                  Plant: {results.prediction.plant}
+                  {t('plantType')}: {results.prediction.plant}
                 </Typography>
 
                 <Box className="confidence-display">
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                    <Typography variant="body1">Confidence</Typography>
+                    <Typography variant="body1">{t('confidenceScore')}</Typography>
                     <Typography variant="body1" sx={{ fontWeight: 600 }}>
                       {formatConfidence(results.prediction.confidence)}%
                     </Typography>
@@ -450,67 +476,149 @@ function HomePage() {
                 </Box>
               </Box>
 
-              {/* Top Predictions */}
+              {/* Enhanced Top 3 Predictions */}
               {results.top_predictions && results.top_predictions.length > 0 && (
-                <Box sx={{ mt: 3 }}>
-                  <Typography variant="h5" gutterBottom color="primary" sx={{ mb: 3 }}>
-                    📊 Top Predictions
-                  </Typography>
+                <Box sx={{ mt: 4 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                    <Typography variant="h5" color="primary" sx={{ fontWeight: 700 }}>
+                      🏆 {t('topPredictions')}
+                    </Typography>
+                    {results.model_version && (
+                      <Chip
+                        label={`Model: ${results.model_version}`}
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        sx={{ fontWeight: 600 }}
+                      />
+                    )}
+                  </Box>
 
-                  <Grid container spacing={2}>
-                    {results.top_predictions.map((pred, index) => (
+                  {/* Image Analysis Info */}
+                  {results.image_analysis && (
+                    <Alert
+                      severity="info"
+                      sx={{
+                        mb: 3,
+                        borderRadius: 3,
+                        background: 'linear-gradient(135deg, rgba(33, 150, 243, 0.1), rgba(100, 181, 246, 0.1))'
+                      }}
+                    >
+                      <strong>🔍 {t('imageAnalysis')}:</strong> {t('resolution')}: {results.image_analysis.resolution},
+                      {t('greenRatio')}: {(results.image_analysis.green_ratio * 100).toFixed(1)}%,
+                      {t('brightness')}: {results.image_analysis.brightness}
+                    </Alert>
+                  )}
+
+                  <Grid container spacing={3}>
+                    {results.top_predictions.slice(0, 3).map((pred, index) => (
                       <Grid item xs={12} md={4} key={index}>
                         <Card
                           sx={{
-                            background: 'rgba(255, 255, 255, 0.9)',
+                            background: index === 0
+                              ? 'linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(129, 199, 132, 0.1))'
+                              : index === 1
+                              ? 'linear-gradient(135deg, rgba(255, 152, 0, 0.1), rgba(255, 183, 77, 0.05))'
+                              : 'linear-gradient(135deg, rgba(244, 67, 54, 0.1), rgba(239, 83, 80, 0.05))',
                             backdropFilter: 'blur(15px)',
-                            borderRadius: 3,
-                            border: index === 0 ? '2px solid #4CAF50' : '1px solid rgba(76, 175, 80, 0.2)',
+                            borderRadius: 4,
+                            border: index === 0
+                              ? '2px solid #4CAF50'
+                              : index === 1
+                              ? '2px solid #FF9800'
+                              : '1px solid rgba(255, 255, 255, 0.3)',
                             transition: 'all 0.3s ease',
+                            position: 'relative',
+                            overflow: 'visible',
                             '&:hover': {
-                              transform: 'translateY(-4px)',
-                              boxShadow: '0 8px 25px rgba(76, 175, 80, 0.2)',
+                              transform: 'translateY(-8px)',
+                              boxShadow: index === 0
+                                ? '0 15px 40px rgba(76, 175, 80, 0.3)'
+                                : '0 15px 40px rgba(0,0,0,0.2)',
                             },
                           }}
                         >
-                          <Box sx={{ p: 3 }}>
+                          {/* Rank Badge */}
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: -12,
+                              right: -12,
+                              width: 36,
+                              height: 36,
+                              borderRadius: '50%',
+                              background: index === 0
+                                ? 'linear-gradient(135deg, #FFD700, #FFA000)'
+                                : index === 1
+                                ? 'linear-gradient(135deg, #C0C0C0, #9E9E9E)'
+                                : 'linear-gradient(135deg, #CD7F32, #8D6E63)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: '1rem',
+                              fontWeight: 'bold',
+                              color: 'white',
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                              zIndex: 1
+                            }}
+                          >
+                            {index + 1}
+                          </Box>
+
+                          <Box sx={{ p: 3, pt: 4 }}>
+                            {/* Header */}
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                              <Typography
-                                variant="h6"
-                                sx={{
-                                  background: index === 0 ? 'linear-gradient(45deg, #4CAF50, #81C784)' : 'linear-gradient(45deg, #9E9E9E, #BDBDBD)',
-                                  backgroundClip: 'text',
-                                  WebkitBackgroundClip: 'text',
-                                  WebkitTextFillColor: 'transparent',
-                                  fontWeight: 700,
-                                }}
-                              >
-                                #{index + 1}
+                              <Typography variant="h6" sx={{ fontWeight: 700, fontSize: '1rem' }}>
+                                {index === 0 ? `🥇 ${t('bestMatch')}` : index === 1 ? `🥈 ${t('alternative')}` : `🥉 ${t('possible')}`}
                               </Typography>
-                              {getHealthIcon(pred.disease)}
                             </Box>
 
-                            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-                              {pred.disease}
-                            </Typography>
+                            {/* Plant Type */}
+                            <Box sx={{ mb: 2, p: 2, borderRadius: 2, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                              <Typography variant="body2" color="text.secondary" gutterBottom>
+                                {t('plantType')}
+                              </Typography>
+                              <Typography variant="h6" sx={{ fontWeight: 600, color: '#4CAF50' }}>
+                                🌱 {pred.plant}
+                              </Typography>
+                            </Box>
 
-                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                              Plant: {pred.plant}
-                            </Typography>
+                            {/* Disease/Condition */}
+                            <Box sx={{ mb: 3, p: 2, borderRadius: 2, backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                              <Typography variant="body2" color="text.secondary" gutterBottom>
+                                {t('condition')}
+                              </Typography>
+                              <Typography
+                                variant="body1"
+                                sx={{
+                                  fontWeight: 600,
+                                  color: pred.disease.toLowerCase().includes('healthy') ? '#4CAF50' : '#FF7043',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: 1
+                                }}
+                              >
+                                {pred.disease.toLowerCase().includes('healthy') ? '✅' : '⚠️'}
+                                {pred.disease}
+                              </Typography>
+                            </Box>
 
+                            {/* Confidence Score */}
                             <Box sx={{ mb: 2 }}>
-                              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                                <Typography variant="body2">Confidence</Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1 }}>
+                                <Typography variant="body2" color="text.secondary">
+                                  {t('confidenceScore')}
+                                </Typography>
+                                <Typography variant="h6" sx={{ fontWeight: 700 }}>
                                   {formatConfidence(pred.confidence)}%
                                 </Typography>
                               </Box>
 
                               <Box
                                 sx={{
-                                  height: 8,
-                                  borderRadius: 4,
-                                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                                  height: 10,
+                                  borderRadius: 5,
+                                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
                                   overflow: 'hidden',
                                 }}
                               >
@@ -518,22 +626,43 @@ function HomePage() {
                                   sx={{
                                     height: '100%',
                                     width: `${formatConfidence(pred.confidence)}%`,
-                                    background: pred.disease.toLowerCase().includes('healthy')
+                                    background: pred.confidence >= 0.8
                                       ? 'linear-gradient(90deg, #4CAF50, #81C784)'
-                                      : 'linear-gradient(90deg, #FF9800, #FFB74D)',
-                                    borderRadius: 4,
+                                      : pred.confidence >= 0.6
+                                      ? 'linear-gradient(90deg, #FF9800, #FFB74D)'
+                                      : 'linear-gradient(90deg, #F44336, #EF5350)',
+                                    borderRadius: 5,
                                     transition: 'width 0.8s ease',
                                   }}
                                 />
                               </Box>
                             </Box>
 
-                            <Chip
-                              label={pred.disease.toLowerCase().includes('healthy') ? 'Healthy' : 'Disease Detected'}
-                              color={pred.disease.toLowerCase().includes('healthy') ? 'success' : 'warning'}
-                              size="small"
-                              sx={{ fontWeight: 500 }}
-                            />
+                            {/* Accuracy Label */}
+                            <Box sx={{ textAlign: 'center' }}>
+                              <Chip
+                                label={pred.accuracy_label || getAccuracyLabel(pred.confidence)}
+                                size="small"
+                                sx={{
+                                  fontWeight: 600,
+                                  backgroundColor: pred.confidence >= 0.8
+                                    ? 'rgba(76, 175, 80, 0.2)'
+                                    : pred.confidence >= 0.6
+                                    ? 'rgba(255, 152, 0, 0.2)'
+                                    : 'rgba(244, 67, 54, 0.2)',
+                                  color: pred.confidence >= 0.8
+                                    ? '#4CAF50'
+                                    : pred.confidence >= 0.6
+                                    ? '#FF9800'
+                                    : '#F44336',
+                                  border: `1px solid ${pred.confidence >= 0.8
+                                    ? '#4CAF50'
+                                    : pred.confidence >= 0.6
+                                    ? '#FF9800'
+                                    : '#F44336'}`
+                                }}
+                              />
+                            </Box>
                           </Box>
                         </Card>
                       </Grid>
@@ -603,6 +732,125 @@ function HomePage() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Plant Selection Dialog */}
+      <Dialog
+        open={showPlantSelectionDialog}
+        onClose={() => setShowPlantSelectionDialog(false)}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 4,
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8))',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+          }
+        }}
+      >
+        <DialogTitle sx={{
+          textAlign: 'center',
+          pb: 1,
+          background: 'linear-gradient(135deg, #4CAF50, #81C784)',
+          color: 'white',
+          borderRadius: '16px 16px 0 0'
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Typography variant="h5" sx={{ fontWeight: 700, flex: 1 }}>
+              🌱 {t('selectPlantTitle')}
+            </Typography>
+            <IconButton
+              onClick={() => setShowPlantSelectionDialog(false)}
+              sx={{ color: 'white' }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Typography variant="body2" sx={{ mt: 1, opacity: 0.9 }}>
+            {t('selectPlantSubtitle')}
+          </Typography>
+        </DialogTitle>
+
+        <DialogContent sx={{ p: 3 }}>
+          <Grid container spacing={2}>
+            {plants.map((plant) => (
+              <Grid item xs={6} sm={4} md={3} key={plant.id}>
+                <Card
+                  onClick={() => {
+                    setSelectedPlant(plant.id);
+                    setShowPlantSelectionDialog(false);
+                    setResults(null);
+                    setError('');
+                  }}
+                  sx={{
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    background: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(10px)',
+                    border: '2px solid transparent',
+                    borderRadius: 3,
+                    '&:hover': {
+                      transform: 'translateY(-8px)',
+                      border: `2px solid ${plant.color}`,
+                      boxShadow: `0 10px 30px ${plant.color}40`,
+                    }
+                  }}
+                >
+                  <CardContent sx={{ textAlign: 'center', p: 2 }}>
+                    <Box
+                      sx={{
+                        width: 60,
+                        height: 60,
+                        mx: 'auto',
+                        mb: 1,
+                        borderRadius: '50%',
+                        background: `linear-gradient(135deg, ${plant.color}20, ${plant.color}10)`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: `2px solid ${plant.color}30`,
+                      }}
+                    >
+                      <img
+                        src={plant.image}
+                        alt={plant.name}
+                        style={{
+                          width: '40px',
+                          height: '40px',
+                          filter: `drop-shadow(2px 2px 4px ${plant.color}40)`,
+                        }}
+                      />
+                    </Box>
+                    <Typography variant="body2" sx={{ fontWeight: 600, color: plant.color }}>
+                      {plant.name}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </DialogContent>
+
+        <DialogActions sx={{ p: 3, pt: 0 }}>
+          <Button
+            onClick={() => setShowPlantSelectionDialog(false)}
+            variant="outlined"
+            fullWidth
+            sx={{
+              borderRadius: 3,
+              py: 1.5,
+              borderColor: '#4CAF50',
+              color: '#4CAF50',
+              '&:hover': {
+                borderColor: '#45a049',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)'
+              }
+            }}
+          >
+            {t('cancel')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
